@@ -1,0 +1,19 @@
+name: fem-microfluidics
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - fenics::fenics
+  - gmsh
+  - jupyter
+  - jupyterlab
+  - numpy
+  - scipy
+  - matplotlib
+  - sympy
+  - meshio
+  - pip
+  - pip:
+    - pandas
+    - ipywidgets
+    - tqdm
