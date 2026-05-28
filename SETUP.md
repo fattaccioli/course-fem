@@ -9,9 +9,11 @@ This guide will get you from zero to running your first FEM simulation in ~10 mi
 - **Git:** for cloning the repo
 - **Conda:** recommended (Miniconda or Anaconda)
 
-## Option 1: Conda (Recommended)
+## Option 1: Conda (Recommended, but can timeout on slow networks)
 
 Conda packages FEniCS and gmsh together, avoiding build headaches.
+
+⚠️ **Note:** If you get timeout errors, see **Option 2 (pip)** or **Option 3 (Docker)** below.
 
 ### 1.1 Create and activate environment
 
@@ -72,7 +74,7 @@ docker build -t fem-microfluidics .
 docker run -p 8888:8888 -v $(pwd):/workspace fem-microfluidics
 ```
 
-(Dockerfile included in the repo.)
+⚠️ **Note:** Docker build may segfault if you're low on memory. **Increase Docker memory to 4GB or use Option 1/2 (pip) instead.** See `docs/DOCKER_TROUBLESHOOTING.md` for details.
 
 ---
 
@@ -242,11 +244,17 @@ conda env update --file environment.yml --prune
 
 ---
 
-## Next Steps
+## Network/Timeout Issues?
 
-1. Activate the environment: `conda activate fem-microfluidics`
-2. Start Jupyter: `jupyter notebook`
-3. Open `notebooks/01_hand_coded_poisson.ipynb`
-4. Run the cells and read the explanations.
+If you see errors like:
+```
+ReadTimeoutError("HTTPSConnectionPool... Read timed out")
+```
 
-Good luck!
+**See `docs/SETUP_ALTERNATIVES.md`** for:
+- ✓ Faster pip-only installation
+- ✓ Mamba (faster than conda)
+- ✓ Docker (no dependency headaches)
+- ✓ Google Colab (cloud, no setup)
+
+The pip option usually works much faster!

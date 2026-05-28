@@ -1,27 +1,38 @@
-FROM conda/miniconda3:latest
+FROM python:3.10-slim
 
 # Set working directory
 WORKDIR /workspace
 
-# Copy environment file
-COPY environment.yml /tmp/environment.yml
+# Install system dependencies (minimal)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    git \
+    && rm -rf /var/lib/apt/lists/*
 
-# Create conda environment
-RUN conda env create -f /tmp/environment.yml && \
-    conda clean -afy
+# Upgrade pip
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
-# Activate environment by default
-ENV PATH /opt/conda/envs/fem-microfluidics/bin:$PATH
-SHELL ["/bin/bash", "-c"]
+# Install Python packages (avoid conda complexity)
+RUN pip install --no-cache-dir \
+    numpy \
+    scipy \
+    matplotlib \
+    jupyter \
+    jupyterlab \
+    pandas \
+    ipywidgets \
+    tqdm \
+    gmsh \
+    fenics-dolfinx
 
-# Install Jupyter and configure for Docker
-RUN conda run -n fem-microfluidics pip install --no-cache-dir jupyter ipykernel
-
-# Create a user (optional, for security)
+# Create a non-root user
 RUN useradd -m -s /bin/bash student && \
     chown -R student:student /workspace
 
 USER student
 
-# Start Jupyter
-CMD ["jupyter", "notebook", "--ip=0.0.0.0", "--no-browser", "--allow-root"]
+# Expose Jupyter port
+EXPOSE 8888
+
+# Default command
+CMD ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root"]
